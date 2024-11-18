@@ -1,16 +1,9 @@
 import discord
 import os
 from dotenv import load_dotenv
-import time
 from discord.ext import commands
 from discord.ext.commands import CheckFailure, check
 from discord.utils import escape_markdown
-import warnings
-import tracemalloc
-# ignore runtime warning(s)
-tracemalloc.start()
-warnings.simplefilter("ignore", RuntimeWarning)
-#
 
 # Configures intents to the bot.
 # Should be allowed to grab usernames from <userid>
