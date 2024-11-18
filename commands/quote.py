@@ -1,14 +1,12 @@
-import discord
-import os
 from dotenv import load_dotenv
+import discord
 import random
 import re
 from discord.ext import commands
 from discord.ext.commands import CheckFailure, check
 from discord.utils import escape_markdown, escape_mentions
 
-from commands.shared import TARGET_CHANNEL_ID
-from commands.shared import ALLOWED_CHANNEL_RANDOM
+from commands.shared import TARGET_CHANNEL_ID, ALLOWED_CHANNEL_RANDOM
 
 # Check channelID if allowed
 def in_allowed_channel(channel_id):
@@ -19,6 +17,7 @@ def in_allowed_channel(channel_id):
     return check(predicate)
 
 # The command actual shit
+
 @commands.command()
 @in_allowed_channel(ALLOWED_CHANNEL_RANDOM)
 async def randomquote(ctx):
@@ -29,21 +28,40 @@ async def randomquote(ctx):
         await ctx.send("Couldn't find the specified channel.")
         return
 
-    # Fetch the last 100 messages from that channel
-    messages = [msg async for msg in channel.history(limit=100) if msg.content]
+    # Fetch the last 100 messages from the target channel
+    messages = [msg async for msg in channel.history(limit=100)]
 
     if not messages:
         await ctx.send("No messages found in the channel.")
         return
 
-    # Choose a random message
+    # Pick a random message
     random_message = random.choice(messages)
-
-    # Replace user mentions with their usernames
     content = random_message.content
-    content = re.sub(r"<@!?(\d+)>", lambda m: random_message.guild.get_member(int(m.group(1))).display_name, content)
 
-    # Format the response with the user's name and the modified content
+    async def replace_mention(match):
+        user_id = int(match.group(1))
+        member = ctx.guild.get_member(user_id)  # Try to get from cache
+        if not member:  # If not cached, try to fetch
+            try:
+                member = await ctx.guild.fetch_member(user_id)
+            except discord.NotFound:
+                return "[Unknown User]"
+        return member.display_name
+
+    # Use re.finditer to find all matches and then replace them
+    mention_pattern = re.compile(r"<@!?(\d+)>")
+    matches = list(mention_pattern.finditer(content))
+    
+    # Process each match and replace mentions with member names
+    for match in matches:
+        member_name = await replace_mention(match)
+        content = content.replace(match.group(0), member_name)
+
+    # Escape markdown to prevent formatting abuse
+    content = escape_markdown(content)
+
+    # Format the response
     quoted_message = f'**{random_message.author.display_name}** said: "{content}"'
 
     # Send the quoted message

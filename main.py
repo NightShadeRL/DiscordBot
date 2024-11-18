@@ -12,6 +12,12 @@ tracemalloc.start()
 warnings.simplefilter("ignore", RuntimeWarning)
 #
 
+# Configures intents to the bot.
+# Should be allowed to grab usernames from <userid>
+intents = discord.Intents.default()
+intents.members = True # Enable access to Member Username/Nickname
+intents.message_content = True # Enables access to message content (Required for reading messages)
+
 # Create a bot instance (one bot for both functionalities)
 intents = discord.Intents.default()
 intents.message_content = True
@@ -22,13 +28,6 @@ load_dotenv(dotenv_path="T:/DiscordBot/bot_token.env")
 BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 if not BOT_TOKEN:
     raise ValueError("No bot token found in the .env file.")
-
-# Bot Starting
-@bot.event
-async def on_ready():
-    print(f"Please wait whilst the bot loads...")
-    time.sleep(3)
-    print(f"Loading Scripts...")
 
 # From commands
 from commands.quote import setup as setup_quotes
