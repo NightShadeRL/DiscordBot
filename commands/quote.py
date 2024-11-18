@@ -18,7 +18,7 @@ def in_allowed_channel(channel_id):
         return True
     return check(predicate)
 
-# The actual shit
+# The command actual shit
 @commands.command()
 @in_allowed_channel(ALLOWED_CHANNEL_RANDOM)
 async def randomquote(ctx):
