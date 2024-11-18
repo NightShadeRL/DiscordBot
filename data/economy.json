@@ -1,0 +1,25 @@
+{
+    "users": {
+        "TESTUSER1#1234": {
+            "balance": 0
+        },
+        "TESTUSER2#5678": {
+            "balance": 0
+        },
+        "beads1061": {
+            "balance": 20
+        },
+        "shad0wmike": {
+            "balance": 0
+        },
+        "star_neon": {
+            "balance": 40
+        },
+        "krystocat": {
+            "balance": 0
+        },
+        "morr_is": {
+            "balance": 0
+        }
+    }
+}
