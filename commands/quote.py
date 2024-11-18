@@ -10,6 +10,7 @@ from discord.utils import escape_markdown, escape_mentions
 from commands.shared import TARGET_CHANNEL_ID
 from commands.shared import ALLOWED_CHANNEL_RANDOM
 
+# Check channelID if allowed
 def in_allowed_channel(channel_id):
     async def predicate(ctx):
         if ctx.channel.id != channel_id:
@@ -17,6 +18,7 @@ def in_allowed_channel(channel_id):
         return True
     return check(predicate)
 
+# The actual shit
 @commands.command()
 @in_allowed_channel(ALLOWED_CHANNEL_RANDOM)
 async def randomquote(ctx):
