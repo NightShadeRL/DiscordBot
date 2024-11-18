@@ -1,5 +1,6 @@
 import discord
 import os
+import time
 from dotenv import load_dotenv
 from discord.ext import commands
 from discord.ext.commands import CheckFailure, check
@@ -31,6 +32,24 @@ from commands.randomseed import setup as setup_seed
 from commands.coinflip import setup as setup_coin
 from commands.germany import setup as setup_germany
 from commands.economy import setup as setup_economy
+from commands.work import setup as setup_work
+
+# From features
+async def load_extensions():
+    try:
+        await bot.load_extension('features.ping')
+        time.sleep(1)
+        print("Ping feature loaded.")
+        time.sleep(1)
+    except Exception as e:
+        print(f"Failed to load ping: {e}")
+    try:
+        await bot.load_extension('features.autorole')
+        time.sleep(1)
+        print("autorole feature loaded.")
+        time.sleep(1)
+    except Exception as e:
+        print(f"Failed to load autorole: {e}")
 
 # Import commands
 setup_quotes(bot)
@@ -41,10 +60,18 @@ setup_seed(bot)
 setup_coin(bot)
 setup_germany(bot)
 setup_economy(bot)
+setup_work(bot)
 
 # Event to signal when the bot is ready
 @bot.event
 async def on_ready():
+    await load_extensions()
     print(f"Bot is ready as {bot.user}")
 # Run the bot with your token
-bot.run(BOT_TOKEN)
+if __name__ == "__main__":
+    import asyncio
+
+    async def main():
+        await bot.start(BOT_TOKEN)
+
+    asyncio.run(main())
