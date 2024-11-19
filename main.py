@@ -15,7 +15,7 @@ intents.message_content = True # Enables access to message content (Required for
 # Create a bot instance (one bot for both functionalities)
 intents = discord.Intents.default()
 intents.message_content = True
-bot = commands.Bot(command_prefix="!", intents=intents)
+bot = commands.Bot(command_prefix="!", intents=intents, case_insensitive=True)
 
 #bot token
 load_dotenv(dotenv_path="T:/DiscordBot/bot_token.env")
