@@ -35,7 +35,7 @@ if not BOT_TOKEN:
 
 # From commands
 from commands.quote import setup as setup_quotes
-from commands.slots import setup as setup_slots
+#from commands.slots import setup as setup_slots
 from commands.dice import setup as setup_roll
 from commands.points import setup as setup_points
 from commands.randomseed import setup as setup_seed
@@ -74,10 +74,17 @@ async def load_extensions():
         time.sleep(1)
     except Exception as e:
         print(f"Failed to load work: {e}")
+    try:
+        await bot.load_extension('commands.slots')
+        time.sleep(1)
+        print("slots command loaded.")
+        time.sleep(1)
+    except Exception as e:
+        print(f"Failed to load slots: {e}")
 
 # Import commands
 setup_quotes(bot)
-setup_slots(bot)
+#setup_slots(bot)
 setup_roll(bot)
 setup_points(bot)
 setup_seed(bot)
