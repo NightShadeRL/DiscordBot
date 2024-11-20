@@ -2,6 +2,7 @@ import json
 import os
 import discord
 import random
+import time
 from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions
 
@@ -52,15 +53,6 @@ async def balance(ctx):
     add_user_to_economy(username)
     balance = get_balance(username)
     await ctx.send(f"{username}, your balance is ${balance}.")
-
-@commands.command()
-async def earn(ctx):
-    """Earn a random amount of money"""
-    username = str(ctx.author)
-    add_user_to_economy(username)
-    amount = random.randint(5, 100)  # Random earning between $1 and $100
-    update_balance(username, amount)
-    await ctx.send(f"🎉 {username}, you earned ${amount}! Your new balance is ${get_balance(username)}.")
 
 @commands.command()
 async def give(ctx, member: discord.Member, amount: int):
@@ -121,7 +113,6 @@ async def setbalance_error(ctx, error):
 # Add commands to the bot
 def setup(bot):
     bot.add_command(balance)
-    bot.add_command(earn)
     bot.add_command(give)
     bot.add_command(spend)
     bot.add_command(setbalance)
