@@ -7,14 +7,14 @@ from discord.ext import commands
 from discord.ext.commands import CheckFailure, check
 from discord.utils import escape_markdown
 
-logging.basicConfig(
-    level=logging.DEBUG,  # Log everything for debugging purposes
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(),  # Output logs to console
-        logging.FileHandler("T:/DiscordBot/logs/bot.log", encoding="utf-8")  # Save logs to a file
-    ]
-)
+#logging.basicConfig(
+#    level=logging.DEBUG,  # Log everything for debugging purposes
+#    format='%(asctime)s - %(levelname)s - %(message)s',
+#    handlers=[
+#        logging.StreamHandler(),  # Output logs to console
+#        logging.FileHandler("T:/DiscordBot/logs/bot.log", encoding="utf-8")  # Save logs to a file
+#    ]
+#)
 
 # Configures intents to the bot.
 # Should be allowed to grab usernames from <userid>
@@ -42,7 +42,7 @@ from commands.randomseed import setup as setup_seed
 from commands.coinflip import setup as setup_coin
 from commands.germany import setup as setup_germany
 # from commands.economy import setup as setup_economy
-from commands.work import setup as setup_work
+# from commands.work import setup as setup_work
 
 # From features
 async def load_extensions():
@@ -67,6 +67,13 @@ async def load_extensions():
         time.sleep(1)
     except Exception as e:
         print(f"Failed to load economy: {e}")
+    try:
+        await bot.load_extension('commands.work')
+        time.sleep(1)
+        print("work command loaded.")
+        time.sleep(1)
+    except Exception as e:
+        print(f"Failed to load work: {e}")
 
 # Import commands
 setup_quotes(bot)
@@ -77,7 +84,7 @@ setup_seed(bot)
 setup_coin(bot)
 setup_germany(bot)
 # setup_economy(bot)
-setup_work(bot)
+# setup_work(bot)
 
 # Event to signal when the bot is ready
 @bot.event
