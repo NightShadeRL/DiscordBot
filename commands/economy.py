@@ -7,6 +7,7 @@ import asyncio
 import aiofiles  # Asynchronous file handling
 from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions
+from discord.utils import escape_markdown, escape_mentions
 
 # FilePaths
 ECONOMY_FILE = "T:/DiscordBot/data/economy.json"
@@ -231,9 +232,40 @@ async def setbalance_error(ctx, error):
     if isinstance(error, MissingPermissions):
         await ctx.send("You don't have permission to use this command.")
 
+# !baltop command
+@commands.command()
+async def baltop(ctx, count: int = 10):
+    """
+    Display the top users with the highest balances.
+    :param count: Number of top users to display (default: 10)
+    """
+    async with economy_lock:
+        data = await ensure_economy_file()
+
+    # Extract users and balances, sort by balance in descending order
+    sorted_users = sorted(
+        data["users"].items(),
+        key=lambda user: user[1]["balance"],
+        reverse=True
+    )
+
+    # Limit to the specified count
+    top_users = sorted_users[:count]
+
+    # Format the output
+    if top_users:
+        baltop_message = "**🏆 Balance Leaderboard 🏆**\n"
+        for rank, (username, details) in enumerate(top_users, start=1):
+            baltop_message += f"**{rank}.** {escape_markdown(username)}: ${details['balance']:,}\n"
+    else:
+        baltop_message = "No users found in the leaderboard."
+
+    await ctx.send(baltop_message)
+
 # Add commands to bot
 async def setup(bot):
     bot.add_command(balance)
     bot.add_command(give)
     bot.add_command(spend)
     bot.add_command(setbalance)
+    bot.add_command(baltop)

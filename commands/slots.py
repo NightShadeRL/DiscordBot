@@ -120,7 +120,46 @@ async def slots(ctx):
         # Regular message when not a jackpot
         await ctx.send(f"{result_str}\nBetter luck next time! Try again! 🍀")
 
+# slots_bet command
+@commands.command()
+@in_allowed_channel(ALLOWED_CHANNEL_SLOTS)
+async def slots_bet(ctx, bet: int):
+    # Ensure the bet is positive
+    if bet <= 0:
+        await ctx.send("Your bet must be a positive number!")
+        return
+
+    username = str(ctx.author)
+    await add_user_to_economy(username)  # Ensure user is in economy.json
+
+    # Check if the user has enough money to bet
+    current_balance = await get_balance(username)
+    if bet > current_balance:
+        await ctx.send("You don't have enough money to place that bet!")
+        return
+
+    # Deduct the bet amount immediately
+    await update_balance(username, -bet)
+
+    # Perform the slot spin
+    spin_result = [random.choice(symbols) for _ in range(3)]
+    result_str = " | ".join(spin_result)
+
+    # Check winning conditions
+    if spin_result == ["🍒", "🍒", "🍒"] or \
+       spin_result == ["7️⃣", "7️⃣", "7️⃣"] or \
+       spin_result == ["🔔", "🔔", "🔔"]:
+        # User wins: double their bet
+        winnings = bet * 2
+        await update_balance(username, winnings)
+        new_balance = await get_balance(username)
+        await ctx.send(f"{result_str}\n🎉 You won! 🎉 Your bet of ${bet} has been doubled! Your new balance is ${new_balance}.")
+    else:
+        # User loses: balance remains reduced by the bet
+        new_balance = await get_balance(username)
+        await ctx.send(f"{result_str}\n❌ Better luck next time! You lost your bet of ${bet}. Your new balance is ${new_balance}.")
 
 # Function to add the command to the bot
 async def setup(bot):
     bot.add_command(slots)
+    bot.add_command(slots_bet)
